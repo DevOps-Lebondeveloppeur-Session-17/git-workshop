@@ -84,9 +84,20 @@
             margin-top: var(--spacing-sm);
         }
 
-        .grade-a { background: var(--color-grade-a-bg); color: var(--color-grade-a-text); }
-        .grade-b { background: var(--color-grade-b-bg); color: var(--color-grade-b-text); }
-        .grade-c { background: var(--color-grade-c-bg); color: var(--color-grade-c-text); }
+        .grade-a {
+            background: var(--color-grade-a-bg);
+            color: var(--color-grade-a-text);
+        }
+
+        .grade-b {
+            background: var(--color-grade-b-bg);
+            color: var(--color-grade-b-text);
+        }
+
+        .grade-c {
+            background: var(--color-grade-c-bg);
+            color: var(--color-grade-c-text);
+        }
 
         .btn-add {
             position: fixed;
@@ -202,7 +213,7 @@
 
 <body>
     <div class="container">
-        <h1>Students Gallery</h1>
+        <h1>Students</h1>
 
         <div class="filters">
             <div class="filter-group">
@@ -298,7 +309,7 @@
 
         function renderStudents(data) {
             const gallery = document.getElementById('gallery');
-            
+
             if (data.length === 0) {
                 gallery.innerHTML = '<div class="no-results">No students found matching your criteria.</div>';
                 return;
