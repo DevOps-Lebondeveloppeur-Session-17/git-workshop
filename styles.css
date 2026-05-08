@@ -1,0 +1,114 @@
+:root {
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.8rem;
+  --font-size-sm: 0.9rem;
+  --font-size-base: 0.95rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 2.5rem;
+
+  /* Primary */
+  --color-primary-start: #667eea;
+  --color-primary-end: #764ba2;
+  --color-primary: linear-gradient(135deg, var(--color-primary-start) 0%, var(--color-primary-end) 100%);
+
+  /* Overlay */
+  --color-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Colors */
+  --color-bg: #f5f5f5;
+  --color-surface: white;
+  --color-text: #333;
+  --color-text-secondary: #555;
+  --color-text-muted: #666;
+  --color-border: #ddd;
+  --color-gray-100: #f0f0f0;
+  --color-gray-200: #e0e0e0;
+
+  /* Grade Colors */
+  --color-grade-a-bg: #d4edda;
+  --color-grade-a-text: #155724;
+  --color-grade-b-bg: #fff3cd;
+  --color-grade-b-text: #856404;
+  --color-grade-c-bg: #f8d7da;
+  --color-grade-c-text: #721c24;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(102, 126, 234, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-primary-hover: 0 6px 20px rgba(102, 126, 234, 0.5);
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 50%;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 40px;
+
+  /* Transitions */
+  --transition-fast: 0.2s;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1, h2 {
+  color: var(--color-text);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+  font-size: var(--font-size-xl);
+}
+
+h2 {
+  margin-bottom: var(--spacing-lg);
+}
+
+input, select {
+  padding: 10px var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--color-primary-start);
+}
+
+button {
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+button:active {
+  transform: translateY(0);
+}

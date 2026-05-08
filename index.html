@@ -4,11 +4,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Students Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+
+        .search-input {
+            min-width: 200px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .student-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .student-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .student-avatar {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .student-info {
+            padding: var(--spacing-md);
+        }
+
+        .student-name {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .student-details {
+            color: var(--color-text-muted);
+            font-size: var(--font-size-sm);
+        }
+
+        .student-details div {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 20px;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            margin-top: var(--spacing-sm);
+        }
+
+        .grade-a {
+            background: var(--color-grade-a-bg);
+            color: var(--color-grade-a-text);
+        }
+
+        .grade-b {
+            background: var(--color-grade-b-bg);
+            color: var(--color-grade-b-text);
+        }
+
+        .grade-c {
+            background: var(--color-grade-c-bg);
+            color: var(--color-grade-c-text);
+        }
+
+        .btn-add {
+            position: fixed;
+            bottom: var(--spacing-xl);
+            right: var(--spacing-xl);
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-full);
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            font-size: 2rem;
+            font-weight: 300;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-primary-hover);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-overlay);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            width: 90%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-lg);
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 14px var(--spacing-md);
+            background: var(--color-gray-100);
+            color: var(--color-text);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-md);
+            font-weight: 600;
+        }
+
+        .btn-cancel:hover {
+            background: var(--color-gray-200);
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 14px var(--spacing-md);
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-md);
+            font-weight: 600;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px var(--spacing-md);
+            color: var(--color-text-muted);
+            font-size: var(--font-size-md);
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Students List</h1>
+    <div class="container">
+        <h1>Students</h1>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>Search:</label>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by name...">
+            </div>
+            <div class="filter-group">
+                <label>Grade:</label>
+                <select id="gradeFilter">
+                    <option value="all">All Grades</option>
+                    <option value="A">Grade A</option>
+                    <option value="A-">Grade A-</option>
+                    <option value="B+">Grade B+</option>
+                    <option value="B">Grade B</option>
+                    <option value="B-">Grade B-</option>
+                    <option value="C">Grade C</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Age:</label>
+                <select id="ageFilter">
+                    <option value="all">All Ages</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="gallery" id="gallery"></div>
+    </div>
+
+    <button class="btn-add" id="addStudentBtn">+</button>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h2>Add New Student</h2>
+            <form id="addStudentForm">
+                <div class="form-group">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName" required placeholder="Enter student name">
+                </div>
+                <div class="form-group">
+                    <label for="studentGrade">Grade</label>
+                    <select id="studentGrade" required>
+                        <option value="">Select grade</option>
+                        <option value="A">A</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="B-">B-</option>
+                        <option value="C">C</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="studentAge">Age</label>
+                    <input type="number" id="studentAge" required min="15" max="25" placeholder="Enter age">
+                </div>
+                <div class="form-group">
+                    <label for="studentAvatar">Avatar URL</label>
+                    <input type="url" id="studentAvatar" required placeholder="https://example.com/avatar.jpg">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn-save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const students = [
+            { id: 1, name: "John Doe", grade: "A", age: 18, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
+            { id: 2, name: "Alice Smith", grade: "A-", age: 17, avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
+            { id: 3, name: "Bob Johnson", grade: "B+", age: 18, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" },
+            { id: 4, name: "Emma Wilson", grade: "A", age: 19, avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
+            { id: 5, name: "Michael Chen", grade: "B", age: 18, avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop" },
+            { id: 6, name: "Sophia Davis", grade: "A", age: 17, avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop" },
+            { id: 7, name: "James Brown", grade: "B-", age: 20, avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop" },
+            { id: 8, name: "Olivia Martinez", grade: "A-", age: 18, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop" },
+            { id: 9, name: "William Taylor", grade: "C", age: 19, avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=400&h=400&fit=crop" },
+            { id: 10, name: "Ava Anderson", grade: "B+", age: 17, avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop" },
+            { id: 11, name: "Daniel White", grade: "A", age: 18, avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
+            { id: 12, name: "Mia Thomas", grade: "B", age: 19, avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop" }
+        ];
+
+        function getGradeClass(grade) {
+            if (grade.startsWith('A')) return 'grade-a';
+            if (grade.startsWith('B')) return 'grade-b';
+            return 'grade-c';
+        }
+
+        function renderStudents(data) {
+            const gallery = document.getElementById('gallery');
+
+            if (data.length === 0) {
+                gallery.innerHTML = '<div class="no-results">No students found matching your criteria.</div>';
+                return;
+            }
+
+            gallery.innerHTML = data.map(student => `
+                <div class="student-card">
+                    <img class="student-avatar" src="${student.avatar}" alt="${student.name}" loading="lazy">
+                    <div class="student-info">
+                        <div class="student-name">${student.name}</div>
+                        <div class="student-details">
+                            <div>Grade: ${student.grade}</div>
+                            <div>Age: ${student.age}</div>
+                        </div>
+                        <span class="grade-badge ${getGradeClass(student.grade)}">${student.grade}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterStudents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const gradeFilter = document.getElementById('gradeFilter').value;
+            const ageFilter = document.getElementById('ageFilter').value;
+
+            const filtered = students.filter(student => {
+                const matchesSearch = student.name.toLowerCase().includes(searchTerm);
+                const matchesGrade = gradeFilter === 'all' || student.grade === gradeFilter;
+                const matchesAge = ageFilter === 'all' || student.age === parseInt(ageFilter);
+                return matchesSearch && matchesGrade && matchesAge;
+            });
+
+            renderStudents(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterStudents);
+        document.getElementById('gradeFilter').addEventListener('change', filterStudents);
+        document.getElementById('ageFilter').addEventListener('change', filterStudents);
+
+        renderStudents(students);
+
+        const modalOverlay = document.getElementById('modalOverlay');
+        const addStudentBtn = document.getElementById('addStudentBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const addStudentForm = document.getElementById('addStudentForm');
+
+        addStudentBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+        });
+
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+
+        addStudentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newStudent = {
+                id: students.length + 1,
+                name: document.getElementById('studentName').value,
+                grade: document.getElementById('studentGrade').value,
+                age: parseInt(document.getElementById('studentAge').value),
+                avatar: document.getElementById('studentAvatar').value
+            };
+            students.push(newStudent);
+            renderStudents(students);
+            filterStudents();
+            addStudentForm.reset();
+            modalOverlay.classList.remove('active');
+        });
+    </script>
 </body>
 
 </html>
